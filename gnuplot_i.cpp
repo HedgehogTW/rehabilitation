@@ -1,6 +1,5 @@
 
 #include "gnuplot_i.h"
-
 //------------------------------------------------------------------------------
 //
 // initialize static data
@@ -320,7 +319,7 @@ Gnuplot& Gnuplot::reset_plot()
 //
 Gnuplot& Gnuplot::reset_all()
 {
-  remove_tmpfiles();
+	remove_tmpfiles();
 
     nplots = 0;
     cmd("reset");
@@ -597,6 +596,9 @@ Gnuplot& Gnuplot::set_zlabel(const std::string &label)
 Gnuplot& Gnuplot::set_xrange(const double iFrom,
                              const double iTo)
 {
+	m_xMin = iFrom;
+	m_xMax = iTo;
+	
     std::ostringstream cmdstr;
 
     cmdstr << "set xrange[" << iFrom << ":" << iTo << "]";
@@ -814,15 +816,14 @@ Gnuplot& Gnuplot::plotfile_xy(const std::string &filename,
                               const unsigned int column_y,
 								 const unsigned int width,
 								 const std::string &color,
-                              const std::string &title)
+                              const std::string &title,
+							 const std::string &dashtype)
 {
     //
     // check if file exists
     //
     file_available(filename);
 
-	const char *str = strrchr(filename.c_str(), '\\');
-	std::string filename1 = str + 1;
 
     std::ostringstream cmdstr;
     //
@@ -833,7 +834,7 @@ Gnuplot& Gnuplot::plotfile_xy(const std::string &filename,
     else
         cmdstr << "plot ";
 
-	cmdstr << "\"" << filename1 << "\" using " << column_x << ":" << column_y;
+    cmdstr << "\"" << filename << "\" using " << column_x << ":" << column_y;
 
     if (title == "")
         cmdstr << " notitle ";
@@ -847,7 +848,9 @@ Gnuplot& Gnuplot::plotfile_xy(const std::string &filename,
 		
     if(color != "")
         cmdstr << " linecolor " << "\"" << color << "\"";
-
+		
+	if(dashtype != "")
+        cmdstr << " dt " << "\"" << dashtype << "\"";	
     //
     // Do the actual plot
     //
@@ -943,11 +946,11 @@ Gnuplot& Gnuplot::plotfile_Boxxyerrorbars(const std::string &filename,
                          const unsigned int column_x ,
                          const unsigned int column_y ,
                          const unsigned int column_xlow ,
-                         const unsigned int column_xhigh ,
-                         const unsigned int column_ylow ,
-                         const unsigned int column_yhigh ,						 
+                         const unsigned int column_xhigh,
+                         const unsigned int column_ylow,
+                         const unsigned int column_yhigh,						 
 							const std::string &color,
-                         const std::string &title )
+                         const std::string &title)
 {
     //
     // check if file exists
@@ -1063,18 +1066,24 @@ Gnuplot& Gnuplot::cmd(const std::string &cmdstr)
     // to the file.  If the argument is a null pointer, all open files are 
     // flushed.  The stream remains open after this call.
     fflush(gnucmd);
-
+	
+	// for handling the multiplot ...
+	std::string str1 = cmdstr.substr (0,5); // extract "splot ..."
+	std::string str2 = cmdstr.substr (0,4); // extract "plot ..."
+	
 
     if( cmdstr.find("replot") != std::string::npos )
     {
         return *this;
     }
-    else if( cmdstr.find("splot") != std::string::npos )
+    //else if( cmdstr.find("splot") != std::string::npos )
+	else if(str1.compare("splot")==0 )
     {
         two_dim = false;
         nplots++;
     }
-    else if( cmdstr.find("plot") != std::string::npos )
+    //else if( cmdstr.find("plot") != std::string::npos )
+	else if(str2.compare("plot")==0 )
     {
         two_dim = true;
         nplots++;
@@ -1290,11 +1299,7 @@ std::string Gnuplot::create_tmpfile(std::ofstream &tmp)
 {
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__TOS_WIN__)
-    //char name[] = "d:\\tmp\\gnuplotiXXXXXX"; //tmp file in working directory, theApp.m_appdir
-	//char name[] = "gnuplotiXXXXXX";
-	//char name[300]; 
-	//sprintf(name, "%s\\gnuplotiXXXXXX", theApp.m_appdir);
-	char name[] = "./gnuplotiXXXXXX";
+    char name[] = "gnuplotiXXXXXX"; //tmp file in working directory
 #elif defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
     char name[] = "/tmp/gnuplotiXXXXXX"; // tmp file in /tmp
 #endif

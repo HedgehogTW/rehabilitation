@@ -1,17 +1,18 @@
-// SignalAnalysis.cpp : ï¿½wï¿½qï¿½Dï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Îµ{ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½Jï¿½Iï¿½C
+// SignalAnalysis.cpp : ©w¸q¥D±±¥xÀ³¥Îµ{¦¡ªº¶i¤JÂI¡C
 //
 
-
+#include "stdafx.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include <opencv2/opencv.hpp>
+#include <opencv/cv.h>
+#include "C:\opencv\build\include\opencv2\core\core.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <math.h>
-#include "gnuplot_i.h"
-#include <string>
-  
-#define _CRT_SECURE_NO_WARNINGS 
+#include "gnuplot_i.hpp"
+#include "string.h"
+
+
+#define _CRT_SECURE_NO_WARNINGS
 
 cv::Mat LoadData(char* filename);
 void tracemat(cv::Mat target);
@@ -40,12 +41,12 @@ cv::Mat mat_UserEigenvectors;
 
 
 char filename[300] = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\";
-char* tmp_1_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½Ó­Kï¿½ï¿½_Ver.4.csv";
-char* tmp_2_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½Ô¤ï¿½y_Ver.4.csv";
-char* tmp_3_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½Iï¿½ï¿½ï¿½ï¿½_Ver.4.csv";
-char* tmp_4_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½ï¿½ï¿½\_Ver.4.csv";
-char* tmp_5_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½ï¿½ï¿½ï¿½_Ver.4.csv";
-//char* tmp_6_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ï¿½ï¿½L_new3.csv";
+char* tmp_1_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ªÓ­K°©_Ver.4.csv";
+char* tmp_2_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\©Ô¤ò¤y_Ver.4.csv";
+char* tmp_3_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\­I«á©ï¤â_Ver.4.csv";
+char* tmp_4_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ÄÁÂ\_Ver.4.csv";
+char* tmp_5_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\ª¦Àð_Ver.4.csv";
+//char* tmp_6_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\Âà½L_new3.csv";
 
 int main(int _argc, char *argv[])
 {
@@ -206,7 +207,7 @@ int main(int _argc, char *argv[])
 
 
 			FILE * fp;
-			fp = fopen("ï¿½×¤ï¿½ï¿½ï¿½ï¿½Æ¾ï¿½_Ver.4-3.csv", "a+");
+			fp = fopen("½×¤å¹êÅç¼Æ¾Ú_Ver.4-3.csv", "a+");
 			fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d\n", result_1, result_2, result_3, result_4, result_5, result_correct_1, result_correct_2, result_correct_3, result_correct_4, result_correct_5, m,n);
 			fclose(fp);
 
@@ -425,7 +426,7 @@ cv::Mat PCA(cv::Mat AfterGSData, char* filename)
 		Fy = (Sign(mat_Affine.at<double>(i, 1)) * pow(mat_Affine.at<double>(i, 1), 2)) / AfterGSData.rows;
 		Fz = (Sign(mat_Affine.at<double>(i, 2)) * pow(mat_Affine.at<double>(i, 2), 2)) / AfterGSData.rows;
 
-		mat_Reflection.at<double>(i, 0) = Sign(Fx); //  12/29  ï¿½×¥ï¿½ ï¿½Ì«ï¿½ï¿½iï¿½hMATï¿½Ý­nï¿½Aï¿½ï¿½ï¿½@ï¿½ï¿½sign
+		mat_Reflection.at<double>(i, 0) = Sign(Fx); //  12/29  ­×¥¿ ³Ì«á¶ñ¶i¥hMAT»Ý­n¦A¨ú¤@¦¸sign
 		mat_Reflection.at<double>(i, 1) = Sign(Fy);
 		mat_Reflection.at<double>(i, 2) = Sign(Fz);
 	}
@@ -440,7 +441,7 @@ cv::Mat PCA(cv::Mat AfterGSData, char* filename)
 	mat_NewReflection.at<double>(2, 2) = mat_Reflection.at<double>(2, 0);
 	//tracemat(mat_NewReflection);
 
-	mat_Normailization = (1.0 / s)* mat_Affine; //*mat_NewReflection;  //ï¿½ï¿½ï¿½ï¿½ï¿½Dï¿½ï¿½~~~~
+	mat_Normailization = (1.0 / s)* mat_Affine; //*mat_NewReflection;  //¦³°ÝÃD°Ú~~~~
 
 	//mat_Normailization = (1.0 / s) * mat_Affine * mat_Reflection;
 	//mat_Normailization = mat_Affine.clone();
@@ -471,7 +472,7 @@ cv::Mat User_PCA(cv::Mat UserGSData, char* filename)
 cv::Mat FeatureExtraction(cv::Mat countFeaturedata)
 {
 	/*line segments --> 09J_Flexible signature descriptions for adaptive motion trajectory representation,perception and recognition*/
-	/*K means cuvature approximation  ï¿½ï¿½ï¿½@ï¿½ï¿½otorsion  Center ï¿½Xï¿½ó¤¤¤ï¿½*/
+	/*K means cuvature approximation  ºâÀ@Åé±otorsion  Center ´X¦ó¤¤¤ß*/
 	double a, b, c, s, delta, k;
 	float H_plus, H_minus;
 	double volume_plus, volume_minus;
@@ -555,7 +556,7 @@ cv::Mat FeatureExtraction(cv::Mat countFeaturedata)
 			mat_torsion.at<double>(i - 2, 0) = torsion;
 		}		
 	}
-	return mat_torsion;//ï¿½ï¿½ï¿½ï¿½
+	return mat_torsion;//¤é«á§ï
 
 	
 	//FILE* file = fopen("Circle_kuo_feature.csv", "w");
@@ -633,7 +634,7 @@ double DTW_Distance(cv::Mat mat_tmp, cv::Mat mat_src) //mat_data, matGS_outputDa
 //void DctTransform()
 //{
 //	int dct_count = count;
-//	// 1-D DCT ï¿½ï¿½ï¿½ï¿½XYZ
+//	// 1-D DCT ¥ý©îXYZ
 //
 //	cv::Mat matDct_intputdata_X;
 //	cv::Mat matDct_intputdata_Y;
@@ -643,10 +644,10 @@ double DTW_Distance(cv::Mat mat_tmp, cv::Mat mat_src) //mat_data, matGS_outputDa
 //	cv::Mat matDct_outputdata_Y;
 //	cv::Mat matDct_outputdata_Z;
 //
-//	//ï¿½ï¿½0ï¿½ï¿½(9/10ï¿½ï¿½ï¿½ï¿½ï¿½É¹sï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½Ì«ï¿½@ï¿½ï¿½)
+//	//¸É0¥Î(9/10¨ú®ø¸É¹s¡Aª½±µ§R°£³Ì«á¤@¦æ)
 //	//cv::Mat mat_rowdata = cv::Mat::zeros(1,3,CV_32F);
 //
-//	//9/3ï¿½oï¿½ï¿½gï¿½ï¿½ï¿½F,9/4ï¿½×§ï¿½//
+//	//9/3³oÃä¼g¿ù¤F,9/4­×§¹//
 //
 //	if (count % 2 != 0){
 //		matGS_outputData.pop_back();
@@ -667,7 +668,7 @@ double DTW_Distance(cv::Mat mat_tmp, cv::Mat mat_src) //mat_data, matGS_outputDa
 //
 //	//tracemat(matDct_outputdata_X);
 //
-//	FILE* file = fopen("ï¿½ï¿½ï¿½\_DCT.csv", "w");
+//	FILE* file = fopen("ÄÁÂ\_DCT.csv", "w");
 //
 //	for (int i = 0; i < dct_count; i++){
 //		fprintf(file, "%f,%f,%f\n", matDct_outputdata_X.at<float>(i, 0), matDct_outputdata_Y.at<float>(i, 0), matDct_outputdata_Z.at<float>(i, 0));
@@ -721,7 +722,7 @@ double DTW_Distance(cv::Mat mat_tmp, cv::Mat mat_src) //mat_data, matGS_outputDa
 //
 //	//tracemat(matDft_outputdata_X);
 //
-//	FILE* file = fopen("ï¿½ï¿½ï¿½\_DFT.csv", "w");
+//	FILE* file = fopen("ÄÁÂ\_DFT.csv", "w");
 //
 //	for (int i = 0; i < count; i++){
 //		fprintf(file, "%f,%f,%f \n", matDft_outputdata_X.at<float>(i, 0), matDft_outputdata_Y.at<float>(i, 0), matDft_outputdata_Z.at<float>(i, 0));
@@ -761,7 +762,7 @@ double DTW_Distance(cv::Mat mat_tmp, cv::Mat mat_src) //mat_data, matGS_outputDa
 //
 //	printf("Peroid = %d samples\n", index);
 //
-//	FILE* file1 = fopen("ï¿½Ô¤ï¿½y_Peroid.csv", "w");
+//	FILE* file1 = fopen("©Ô¤ò¤y_Peroid.csv", "w");
 //
 //	for (int i = 0; i < count; i++){
 //		if (i%index == 0 && i != 0){
@@ -876,7 +877,7 @@ float CalculateAllTmp(cv::Mat mat_tmplate, cv::Mat mat_src)
 	mat_srcIndex = FindPeriod(mat_src);
 	mat_tmpIndex = FindPeriod(mat_tmplate);
 
-	/*select Tmplate to matching  ï¿½ï¿½ï¿½Ä¤T(2-3)ï¿½Ó©Pï¿½ï¿½ */
+	/*select Tmplate to matching  ¨ú²Ä¤T(2-3)­Ó©P´Á */
 	mat_periodDTWtmp = GetIntervalSignal(mat_tmplate, mat_tmpIndex.at<int>(1, 0), mat_tmpIndex.at<int>(2, 0));
 	
 	/*20150414*/
@@ -945,7 +946,7 @@ cv::Mat GetIntervalSignal(cv::Mat mat_src, int StartIndex, int EndIndex)
 	
 	for (int i = StartIndex; i <= EndIndex; i++){
 		for (int j = 0; j < mat_src.cols; j++){
-			mat_period.at<double>(i - StartIndex, j) = mat_src.at <double>(i, j); //mat_period ï¿½nï¿½q0ï¿½}ï¿½l 
+			mat_period.at<double>(i - StartIndex, j) = mat_src.at <double>(i, j); //mat_period ­n±q0¶}©l 
 		}
 	}
 	//tracemat(mat_period);
@@ -1009,7 +1010,7 @@ void PlotInSameFigure(cv::Mat original, cv::Mat result, const std::string figure
 	g2.plot_xyz(a, b, c, "User");
 	g2.plot_xyz(x, y, z, "Template");
 	//system("pause");
-//	g2.savepng(figurefilename);
+	g2.savepng(figurefilename);
 	g2.reset_all();
 	//g2.remove_tmpfiles();
 

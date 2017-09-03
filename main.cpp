@@ -30,7 +30,7 @@ cv::Mat loadAlltemplate(char* filename);
 cv::Mat calc_angle(cv::Mat mat_Eigenvec, cv::Mat mat_EigenvecTmp);
 
 cv::Mat mat_Normailization;
-int tmpNum;
+
 /*20140423*/
 cv::Mat User_PCA(cv::Mat UserGSData, char* filename);
 float x = 0, y = 0, z = 0;
@@ -38,185 +38,87 @@ cv::Mat mat_UserMean;
 cv::Mat mat_UserEigenvectors;
 
 
-char filename[300] = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\";
-char* tmp_1_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\�ӭK��_Ver.4.csv";
-char* tmp_2_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\�Ԥ�y_Ver.4.csv";
-char* tmp_3_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\�I����_Ver.4.csv";
-char* tmp_4_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\���\_Ver.4.csv";
-char* tmp_5_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\����_Ver.4.csv";
+char* tmp_1_filename = "_a_spealbone.csv";
+char* tmp_2_filename = "_b_towel.csv";
+char* tmp_3_filename = "_c_back_raise_hand.csv";
+char* tmp_4_filename = "_d_pendulum.csv";
+char* tmp_5_filename = "_e_climb_wall.csv";
 //char* tmp_6_filename = "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\��L_new3.csv";
+
 
 int main(int _argc, char *argv[])
 {
-	
-	//char buffer[50];// = argv[1];
-	//strcpy(buffer, argv[1]);
-	//strcat(filename, buffer);
-	//printf("%s\n\n", argv[1]);
 
+//	printf("argc %d, argv[1] %s, argv[2] %s\n", _argc, argv[1], argv[2]);
+
+//	if(_argc != 3) return 0;
+	
+	char user_file[300];
+//	strcpy(user_file, argv[1]);
+//	int tmpNum = *argv[2] - '0';	
+	
+	strcpy(user_file, "_a_spealbone.csv");
+	int tmpNum = 1;
+	printf("tmpNum %d\n", tmpNum);
 	/*Select template*/
-	//char* tmp_filename = NULL;
-	//switch (*argv[2])
-	//{
-	//case '1':
-	//	tmp_filename = tmp_1_filename;
-	//	tmpNum = 1;
-	//	break;
-	//case '2':
-	//	tmp_filename = tmp_2_filename;
-	//	tmpNum = 2;
-	//	break;	
-	//case '3':
-	//	tmp_filename = tmp_3_filename;
-	//	tmpNum = 3;
-	//	break;	
-	//case '4':
-	//	tmp_filename = tmp_4_filename;
-	//	tmpNum = 4;
-	//	break;
-	//case '5':
-	//	tmp_filename = tmp_5_filename;
-	//	tmpNum = 5;
-	//	break;
-	//case '6':
-	//	tmp_filename = tmp_6_filename;
-	//	tmpNum = 6;
-	//	break;
-	//default:
-	//	break;
-	//}
+	char* template_file = NULL;
+	switch (tmpNum)
+	{
+	case 1:
+		template_file = tmp_1_filename;
+		tmpNum = 1;
+		break;
+	case 2:
+		template_file = tmp_2_filename;
+		tmpNum = 2;
+		break;	
+	case 3:
+		template_file = tmp_3_filename;
+		tmpNum = 3;
+		break;	
+	case 4:
+		template_file = tmp_4_filename;
+		tmpNum = 4;
+		break;
+	case 5:
+		template_file = tmp_5_filename;
+		tmpNum = 5;
+		break;
+	default:
+		break;
+	}
 
 	/*template*/
-	//cv::Mat mat_templatedata;
-	//cv::Mat mat_GSTmpData;
-	//cv::Mat mat_PCATmpData;
-
-	//mat_templatedata = LoadData(tmp_filename);
-	//mat_GSTmpData = GaussianSmooth(mat_templatedata, "TmpSmooth.csv");
-	//mat_PCATmpData = PCA(mat_GSTmpData, "TmpPCA.csv");
+	cv::Mat mat_template = LoadData(template_file);
+	cv::Mat mat_GSTmpData = GaussianSmooth(mat_template, "TemplateSmooth.csv");
+	cv::Mat mat_PCATmpData = PCA(mat_GSTmpData, "TemplatePCA.csv");
+	cv::Mat mat_EigenvecTmp = User_PCA(mat_PCATmpData, "tmp");
 	
-	for (int m = 101; m < 102; m++){
-		for (int n = 1; n < 2; n++){
-			if (m == 83)
-				continue;
-			sprintf(filename, "C:\\Users\\ChiaHao\\Documents\\Visual Studio 2013\\Projects\\SignalAnalysis\\SignalAnalysis\\%d (%d).csv", m, n);
-			
-			float result_1, result_2, result_3, result_4, result_5;
-			float result_correct_1, result_correct_2, result_correct_3, result_correct_4, result_correct_5;
-			cv::Mat tmpData_1 = loadAlltemplate(tmp_1_filename);
-			cv::Mat tmpData_2 = loadAlltemplate(tmp_2_filename);
-			cv::Mat tmpData_3 = loadAlltemplate(tmp_3_filename);
-			cv::Mat tmpData_4 = loadAlltemplate(tmp_4_filename);
-			cv::Mat tmpData_5 = loadAlltemplate(tmp_5_filename);
-			cv::Mat mat_EigenvecTmp_1 = User_PCA(tmpData_1, "tmp");
-			cv::Mat mat_EigenvecTmp_2 = User_PCA(tmpData_2, "tmp");
-			cv::Mat mat_EigenvecTmp_3 = User_PCA(tmpData_3, "tmp");
-			cv::Mat mat_EigenvecTmp_4 = User_PCA(tmpData_4, "tmp");
-			cv::Mat mat_EigenvecTmp_5 = User_PCA(tmpData_5, "tmp");
-
-			/*User data*/
-			cv::Mat mat_data;
-			cv::Mat mat_GSData;
-			cv::Mat mat_PCAData;
-
-			mat_data = LoadData(filename);
-			mat_GSData = GaussianSmooth(mat_data, "Smooth.csv");
-			mat_PCAData = PCA(mat_GSData, "PCA.csv");
-			cv::Mat mat_Eigenvec = User_PCA(mat_PCAData, "user");
-
-			result_1 = CalculateAllTmp(tmpData_1, mat_PCAData);
-			result_2 = CalculateAllTmp(tmpData_2, mat_PCAData);
-			result_3 = CalculateAllTmp(tmpData_3, mat_PCAData);
-			result_4 = CalculateAllTmp(tmpData_4, mat_PCAData);
-			result_5 = CalculateAllTmp(tmpData_5, mat_PCAData);
-
-			printf("result_1 = %f\n", result_1 * 10000);
-			printf("result_2 = %f\n", result_2 * 10000);
-			printf("result_3 = %f\n", result_3 * 10000);
-			printf("result_4 = %f\n", result_4 * 10000);
-			printf("result_5 = %f\n", result_5 * 10000);
+	
+	cv::Mat mat_userdata = LoadData(user_file);
+	cv::Mat mat_GSData = GaussianSmooth(mat_userdata, "userSmooth.csv");
+	cv::Mat mat_PCAData = PCA(mat_GSData, "userPCA.csv");
+	cv::Mat mat_Eigenvec = User_PCA(mat_PCAData, "user");
 
 
-			//PlotInSameFigure(mat_PCAData, tmpData_1, "tmpData_1", "original_1");
-			//PlotInSameFigure(mat_PCAData, tmpData_2, "tmpData_2", "original_2");
-			//PlotInSameFigure(mat_PCAData, tmpData_3, "tmpData_3", "original_3");
-			//PlotInSameFigure(mat_PCAData, tmpData_4, "tmpData_4", "original_4");
-			//PlotInSameFigure(mat_PCAData, tmpData_5, "tmpData_5", "original_5");
-
-			//char *delim = ".";
-			//char * pch;
-			//pch = strtok(buffer, delim);
-
-			cv::Mat mat_Rotate_1 = cv::Mat::zeros(3, 3, CV_64F);
-			cv::Mat mat_Rotate_2 = cv::Mat::zeros(3, 3, CV_64F);
-			cv::Mat mat_Rotate_3 = cv::Mat::zeros(3, 3, CV_64F);
-			cv::Mat mat_Rotate_4 = cv::Mat::zeros(3, 3, CV_64F);
-			cv::Mat mat_Rotate_5 = cv::Mat::zeros(3, 3, CV_64F);
-			for (int i = 0; i < mat_Rotate_1.rows; i++){
-				for (int j = 0; j < mat_Rotate_1.cols; j++){
-					printf("%f ", mat_Rotate_1.at<double>(i, j));
-				}
-			}
-
-			mat_Rotate_1 = calc_angle(mat_Eigenvec, mat_EigenvecTmp_1);
-			//for (int i = 0; i < mat_Rotate_1.rows; i++){
-			//	for (int j = 0; j < mat_Rotate_1.cols; j++){
-			//		printf("%f ", mat_Rotate_1.at<double>(i, j));
-			//	}
-			//}
-			mat_Rotate_2 = calc_angle(mat_Eigenvec, mat_EigenvecTmp_2);
-			mat_Rotate_3 = calc_angle(mat_Eigenvec, mat_EigenvecTmp_3);
-			mat_Rotate_4 = calc_angle(mat_Eigenvec, mat_EigenvecTmp_4);
-			mat_Rotate_5 = calc_angle(mat_Eigenvec, mat_EigenvecTmp_5);
+	float result_1 = CalculateAllTmp(mat_PCATmpData, mat_PCAData);
+	printf("result_1 = %f\n", result_1 * 10000);
+	PlotInSameFigure(mat_PCAData, mat_PCATmpData, "tmpData", "original");
 
 
-			cv::Mat mat_PCARotate_1;//= mat_PCAData.clone();
-			cv::Mat mat_PCARotate_2;//= mat_PCAData.clone();
-			cv::Mat mat_PCARotate_3;//= mat_PCAData.clone();
-			cv::Mat mat_PCARotate_4;//= mat_PCAData.clone();
-			cv::Mat mat_PCARotate_5;//= mat_PCAData.clone();
+	cv::Mat mat_Rotate = cv::Mat::zeros(3, 3, CV_64F);
+	mat_Rotate = calc_angle(mat_Eigenvec, mat_EigenvecTmp);
+	cv::Mat mat_PCARotate;//= mat_PCAData.clone();
+	mat_PCARotate = mat_PCAData * mat_Rotate;
+	float result_correct_1 = CalculateAllTmp(mat_PCATmpData, mat_PCARotate);
+	
+	printf("result_correct_1 = %f %%\n", result_correct_1 * 10000);
+	PlotInSameFigure(mat_PCARotate, mat_PCATmpData, "tmpData_1", "original_R1");
 
-
-			mat_PCARotate_1 = mat_PCAData * mat_Rotate_1;
-			mat_PCARotate_2 = mat_PCAData * mat_Rotate_2;
-			mat_PCARotate_3 = mat_PCAData * mat_Rotate_3;
-			mat_PCARotate_4 = mat_PCAData * mat_Rotate_4;
-			mat_PCARotate_5 = mat_PCAData * mat_Rotate_5;
-
-
-			result_correct_1 = CalculateAllTmp(tmpData_1, mat_PCARotate_1);
-			result_correct_2 = CalculateAllTmp(tmpData_2, mat_PCARotate_2);
-			result_correct_3 = CalculateAllTmp(tmpData_3, mat_PCARotate_3);
-			result_correct_4 = CalculateAllTmp(tmpData_4, mat_PCARotate_4);
-			result_correct_5 = CalculateAllTmp(tmpData_5, mat_PCARotate_5);
-			/*PlotInSameFigure(mat_PCARotate_1, tmpData_1, "Result", "Result");*/
-
-			printf("result_correct_1 = %f %%\n", result_correct_1 * 10000);
-			printf("result_correct_2 = %f %%\n", result_correct_2 * 10000);
-			printf("result_correct_3 = %f %%\n", result_correct_3 * 10000);
-			printf("result_correct_4 = %f %%\n", result_correct_4 * 10000);
-			printf("result_correct_5 = %f %%\n", result_correct_5 * 10000);
-
-			//PlotInSameFigure(mat_PCARotate_1, tmpData_1, "tmpData_1", "original_R1");
-			//PlotInSameFigure(mat_PCARotate_2, tmpData_2, "tmpData_2", "original_R2");
-			//PlotInSameFigure(mat_PCARotate_3, tmpData_3, "tmpData_3", "original_R3");
-			//PlotInSameFigure(mat_PCARotate_4, tmpData_4, "tmpData_4", "original_R4");
-			//PlotInSameFigure(mat_PCARotate_5, tmpData_5, "tmpData_5", "original_R5");
-
-
-			FILE * fp;
-			fp = fopen("�פ����ƾ�_Ver.4-3.csv", "a+");
-			fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d\n", result_1, result_2, result_3, result_4, result_5, result_correct_1, result_correct_2, result_correct_3, result_correct_4, result_correct_5, m,n);
-			fclose(fp);
-
-
-			printf("\n%s\n", filename);
-			//system("pause");
-		}
-	}
 	return 0;
-	//return result_1 * 10000;
-} 
+	
+}
+
 
 cv::Mat calc_angle(cv::Mat mat_Eigenvec, cv::Mat mat_EigenvecTmp)
 {
@@ -274,7 +176,7 @@ cv::Mat LoadData(char* filename)
 	double a, b, c;
 	int n;
 	if ((file = fopen(filename, "r")) == NULL){
-		printf("open fail\n");
+		printf("open fail: %s\n", filename);
 		return mat_mdata;
 	}
 	
@@ -303,7 +205,7 @@ cv::Mat LoadData(char* filename)
 }
 
 
-cv::Mat GaussianSmooth(cv::Mat original_data,char* filename)
+cv::Mat GaussianSmooth(cv::Mat original_data, char* filename)
 {
 	cv::Mat matGS_outputData = cv::Mat::zeros(original_data.rows,original_data.cols,CV_64F);
 	
@@ -1007,7 +909,7 @@ void PlotInSameFigure(cv::Mat original, cv::Mat result, const std::string figure
 	g2.set_grid();
 	g2.plot_xyz(a, b, c, "User");
 	g2.plot_xyz(x, y, z, "Template");
-	//system("pause");
+//	system("pause");
 //	g2.savepng(figurefilename);
 	g2.reset_all();
 	//g2.remove_tmpfiles();
