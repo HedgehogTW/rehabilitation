@@ -30,7 +30,7 @@
 #ifndef _GNUPLOT_PIPES_H_
 #define _GNUPLOT_PIPES_H_
 
-//#include <wx/log.h> 
+#include <wx/log.h> 
 #include <iostream>
 #include <string>
 #include <vector>
@@ -60,7 +60,7 @@
 class GnuplotException : public std::runtime_error
 {
     public:
-        GnuplotException(const std::string &msg) : std::runtime_error(msg){ printf("%s\n", msg); }
+        GnuplotException(const std::string &msg) : std::runtime_error(msg){ wxLogMessage(wxString(msg)); }
 };
 
 

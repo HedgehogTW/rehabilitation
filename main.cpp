@@ -8,11 +8,11 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <math.h>
-#include "gnuplot_i.h"
+#include "gnuplot_i.hpp"
 #include <string>
   
 
-cv::Mat LoadData(char* filename);
+bool LoadData(char* filename, cv::Mat& mat_mdata);
 void tracemat(cv::Mat target);
 cv::Mat GaussianSmooth(cv::Mat original_data, char* filename);
 cv::Mat PCA(cv::Mat AfterGSData, char* filename);
@@ -26,7 +26,7 @@ void PlotInSameFigure(cv::Mat original, cv::Mat result, const std::string figure
 float CalculateAllTmp(cv::Mat mat_tmplate, cv::Mat mat_src);
 cv::Mat GetIntervalSignal(cv::Mat mat_src, int StartIndex, int EndIndex);
 cv::Mat FindPeriod(cv::Mat src);
-cv::Mat loadAlltemplate(char* filename);
+bool loadAlltemplate(char* filename, cv::Mat& mat_mdata);
 cv::Mat calc_angle(cv::Mat mat_Eigenvec, cv::Mat mat_EigenvecTmp);
 
 cv::Mat mat_Normailization;
@@ -89,13 +89,24 @@ int main(int _argc, char *argv[])
 	}
 
 	/*template*/
-	cv::Mat mat_template = LoadData(template_file);
+	bool bResult;
+	cv::Mat mat_template;
+	bResult = LoadData(template_file, mat_template);
+	if(!bResult) {
+		printf("LoadData: %s falied\n", template_file);
+		return 0;
+	}
 	cv::Mat mat_GSTmpData = GaussianSmooth(mat_template, "TemplateSmooth.csv");
 	cv::Mat mat_PCATmpData = PCA(mat_GSTmpData, "TemplatePCA.csv");
 	cv::Mat mat_EigenvecTmp = User_PCA(mat_PCATmpData, "tmp");
 	
+	cv::Mat mat_userdata;
+	bResult = LoadData(user_file, mat_userdata);
+	if(!bResult) {
+		printf("LoadData: %s falied\n", user_file);
+		return 0;
+	}
 	
-	cv::Mat mat_userdata = LoadData(user_file);
 	cv::Mat mat_GSData = GaussianSmooth(mat_userdata, "userSmooth.csv");
 	cv::Mat mat_PCAData = PCA(mat_GSData, "userPCA.csv");
 	cv::Mat mat_Eigenvec = User_PCA(mat_PCAData, "user");
@@ -103,7 +114,7 @@ int main(int _argc, char *argv[])
 
 	float result_1 = CalculateAllTmp(mat_PCATmpData, mat_PCAData);
 	printf("result_1 = %f\n", result_1 * 10000);
-	PlotInSameFigure(mat_PCAData, mat_PCATmpData, "tmpData", "original");
+	PlotInSameFigure(mat_PCAData, mat_PCATmpData, "tmpData", "original.png");
 
 
 	cv::Mat mat_Rotate = cv::Mat::zeros(3, 3, CV_64F);
@@ -113,7 +124,7 @@ int main(int _argc, char *argv[])
 	float result_correct_1 = CalculateAllTmp(mat_PCATmpData, mat_PCARotate);
 	
 	printf("result_correct_1 = %f %%\n", result_correct_1 * 10000);
-	PlotInSameFigure(mat_PCARotate, mat_PCATmpData, "tmpData_1", "original_R1");
+	PlotInSameFigure(mat_PCARotate, mat_PCATmpData, "tmpData_1", "original_R1.png");
 
 	return 0;
 	
@@ -139,17 +150,23 @@ cv::Mat calc_angle(cv::Mat mat_Eigenvec, cv::Mat mat_EigenvecTmp)
 	return mat_ZRotate.clone();
 }
 
-cv::Mat loadAlltemplate(char *filename)
+bool loadAlltemplate(char *filename, cv::Mat &mat_PCATmpData)
+
 {
 	cv::Mat mat_templatedata;
 	cv::Mat mat_GSTmpData;
-	cv::Mat mat_PCATmpData;
+//	cv::Mat mat_PCATmpData;
 
-	mat_templatedata = LoadData(filename);
+	bool bResult = LoadData(filename, mat_templatedata);
+	if(!bResult) {
+		printf("loadAlltemplate: %s falied\n", filename);
+		return false;
+	}
+	
 	mat_GSTmpData = GaussianSmooth(mat_templatedata, "TmpSmooth.csv");
 	mat_PCATmpData = PCA(mat_GSTmpData, "TmpPCA.csv");
 
-	return mat_PCATmpData;
+	return true;
 }
 
 void tracemat(cv::Mat target) 
@@ -167,17 +184,17 @@ void tracemat(cv::Mat target)
 	}
 }
 
-cv::Mat LoadData(char* filename)
+bool LoadData(char* filename, cv::Mat& mat_mdata)
 {
 	int count = 0;
-	cv::Mat mat_mdata;
+	
 	FILE *file;
 
 	double a, b, c;
 	int n;
 	if ((file = fopen(filename, "r")) == NULL){
 		printf("open fail: %s\n", filename);
-		return mat_mdata;
+		return false;
 	}
 	
 	do{
@@ -200,7 +217,7 @@ cv::Mat LoadData(char* filename)
 	//printf("\n");
 	fclose(file);
 	//tracemat(mat_mdata);
-	return mat_mdata;
+	return true;
 	
 }
 
@@ -905,12 +922,13 @@ void PlotInSameFigure(cv::Mat original, cv::Mat result, const std::string figure
 	}
 
 	Gnuplot g2("lines");
+	g2.savetofigure(figurefilename, "png");
 	g2.set_title(figurename);
 	g2.set_grid();
 	g2.plot_xyz(a, b, c, "User");
 	g2.plot_xyz(x, y, z, "Template");
-//	system("pause");
-//	g2.savepng(figurefilename);
+	system("pause");
+//	g2.savetofigure(figurefilename, "png");
 	g2.reset_all();
 	//g2.remove_tmpfiles();
 

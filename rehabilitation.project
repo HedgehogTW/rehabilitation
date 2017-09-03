@@ -4,8 +4,7 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="main.cpp"/>
-    <File Name="gnuplot_i.cpp"/>
-    <File Name="gnuplot_i.h"/>
+    <File Name="gnuplot_i.hpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
